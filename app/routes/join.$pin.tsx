@@ -8,11 +8,55 @@ import { StatusMessage } from "~/components/participant/StatusMessage";
 import { Badge } from "~/components/ui/Badge";
 import { Card } from "~/components/ui/Card";
 import { getSupabaseBrowserClient } from "~/lib/supabase.client";
+import { getSupabaseServerClient } from "~/lib/supabase.server";
 import { savePlayerSession } from "~/lib/player-session";
 import { normalizeGameCode } from "~/lib/pin";
 
 export function meta({ params }: Route.MetaArgs) {
   return [{ title: `Join ${params.pin} · Ganesh Quiz` }];
+}
+
+type JoinLoaderData =
+  | { status: "invalid_format"; pin: string }
+  | { status: "not_found"; pin: string }
+  | { status: "not_accepting"; pin: string }
+  | { status: "ready"; pin: string };
+
+export async function loader({ request, params }: Route.LoaderArgs) {
+  const pin = normalizeGameCode(params.pin);
+
+  if (pin.length !== 6) {
+    return Response.json(
+      { status: "invalid_format", pin } satisfies JoinLoaderData,
+    );
+  }
+
+  const { supabase, headers } = getSupabaseServerClient(request);
+  const { data: game, error } = await supabase
+    .from("games")
+    .select("phase,status")
+    .eq("game_code", pin)
+    .eq("status", "active")
+    .single();
+
+  if (error || !game) {
+    return Response.json(
+      { status: "not_found", pin } satisfies JoinLoaderData,
+      { headers: Object.fromEntries(headers.entries()) },
+    );
+  }
+
+  if (game.phase !== "lobby") {
+    return Response.json(
+      { status: "not_accepting", pin } satisfies JoinLoaderData,
+      { headers: Object.fromEntries(headers.entries()) },
+    );
+  }
+
+  return Response.json(
+    { status: "ready", pin } satisfies JoinLoaderData,
+    { headers: Object.fromEntries(headers.entries()) },
+  );
 }
 
 const mapJoinError = (message: string): string => {
@@ -30,8 +74,22 @@ const mapJoinError = (message: string): string => {
   return "Couldn't join the game. Please try again.";
 };
 
-export default function JoinPage({ params }: Route.ComponentProps) {
-  const pin = normalizeGameCode(params.pin);
+const joinStatusCopy = (status: JoinLoaderData["status"]) => {
+  if (status === "not_accepting") {
+    return {
+      title: "Game already started",
+      description: "Ask your host for a new PIN or wait for the next game.",
+    };
+  }
+
+  return {
+    title: "Invalid PIN",
+    description: "Check the 6-digit PIN with your host and try again.",
+  };
+};
+
+export default function JoinPage({ loaderData }: Route.ComponentProps) {
+  const { pin, status } = loaderData as JoinLoaderData;
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -73,12 +131,14 @@ export default function JoinPage({ params }: Route.ComponentProps) {
     navigate(`/play/${result.game_id}`);
   };
 
-  if (pin.length !== 6) {
+  if (status !== "ready") {
+    const copy = joinStatusCopy(status);
+
     return (
       <ParticipantShell className="justify-center gap-6">
         <StatusMessage
-          title="Invalid PIN"
-          description="Enter a 6-digit PIN on the home page."
+          title={copy.title}
+          description={copy.description}
           tone="danger"
           pose="surprised"
         />
@@ -95,7 +155,7 @@ export default function JoinPage({ params }: Route.ComponentProps) {
   return (
     <ParticipantShell className="justify-center gap-6">
       <header className="text-center">
-        <GaneshMascot pose="wave" size="lg" className="mb-4" />
+        <GaneshMascot pose="happy" size="lg" className="mb-4" />
         <Badge tone="live">PIN {pin}</Badge>
         <h1 className="mt-3 font-display text-3xl font-bold text-festival-navy">
           Almost there!

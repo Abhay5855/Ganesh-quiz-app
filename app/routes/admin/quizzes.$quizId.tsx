@@ -198,7 +198,7 @@ export default function EditQuizPage({ loaderData }: Route.ComponentProps) {
                     media_url: values.media_url,
                     config_json: values.config_json,
                     time_limit_seconds: values.time_limit_seconds,
-                    points: values.points,
+                    points: 1,
                   })
                   .eq("id", editing.id);
                 if (error) throw error;
@@ -211,7 +211,7 @@ export default function EditQuizPage({ loaderData }: Route.ComponentProps) {
                   media_url: values.media_url,
                   config_json: values.config_json as QuestionConfig,
                   time_limit_seconds: values.time_limit_seconds,
-                  points: values.points,
+                  points: 1,
                   position,
                 });
                 if (error) throw error;

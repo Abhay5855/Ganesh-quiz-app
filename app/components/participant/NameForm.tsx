@@ -25,12 +25,13 @@ export const NameForm = ({ onSubmit, loading, error }: NameFormProps) => {
         name="displayName"
         autoComplete="nickname"
         placeholder="Your name"
-        maxLength={40}
+        maxLength={12}
         value={name}
         onChange={(e) => setName(e.target.value)}
         error={error ?? undefined}
         aria-label="Display name"
       />
+      <p className="-mt-2 text-xs text-festival-muted">Maximum 12 characters</p>
       <Button
         type="submit"
         size="lg"

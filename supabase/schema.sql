@@ -142,7 +142,7 @@ create table public.questions (
   media_url text,
   config_json jsonb not null default '{}'::jsonb,
   time_limit_seconds integer not null default 30,
-  points integer not null default 1000,
+  points integer not null default 1,
   position integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -151,7 +151,7 @@ create table public.questions (
   constraint questions_time_limit_range check (
     time_limit_seconds >= 5 and time_limit_seconds <= 120
   ),
-  constraint questions_points_nonnegative check (points >= 0),
+  constraint questions_points_nonnegative check (points >= 1),
   constraint questions_position_nonnegative check (position >= 0)
 );
 
@@ -222,6 +222,7 @@ create table public.players (
   joined_at timestamptz not null default now(),
 
   constraint players_display_name_not_blank check (char_length(trim(display_name)) > 0),
+  constraint players_display_name_length check (char_length(trim(display_name)) <= 12),
   constraint players_score_nonnegative check (score >= 0),
   constraint players_token_hash_not_blank check (char_length(player_token_hash) > 0)
 );
@@ -661,8 +662,7 @@ revoke all on function public.evaluate_answer(
   public.question_type, jsonb, jsonb
 ) from public;
 
--- Linear speed bonus: instant correct → 100% of question points;
--- at the time limit → 50%. Wrong answers always 0. Never exceeds p_base_points.
+-- Event scoring: every correct question is worth exactly one point.
 create or replace function public.compute_points(
   p_base_points integer,
   p_is_correct boolean,
@@ -678,19 +678,7 @@ declare
   v_timer_ms numeric;
   v_ratio numeric;
 begin
-  if not p_is_correct then
-    return 0;
-  end if;
-
-  v_timer_ms := greatest(p_time_limit_seconds, 1) * 1000.0;
-  v_ratio := greatest(
-    0.5,
-    1.0 - (least(greatest(p_response_time_ms, 0), v_timer_ms)::numeric / v_timer_ms) * 0.5
-  );
-  return least(
-    p_base_points,
-    floor(p_base_points * v_ratio)::integer
-  );
+  return case when p_is_correct then 1 else 0 end;
 end;
 $$;
 
@@ -915,7 +903,7 @@ begin
     'question_text', v_q.question_text,
     'media_url', v_q.media_url,
     'time_limit_seconds', v_q.time_limit_seconds,
-    'points', v_q.points,
+    'points', 1,
     'question_started_at', v_game.question_started_at,
     'question_number', v_question_number,
     'question_count', v_question_count,

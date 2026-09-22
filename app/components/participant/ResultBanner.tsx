@@ -10,12 +10,14 @@ type ResultBannerProps = {
   isCorrect: boolean;
   pointsAwarded: number;
   responseTimeMs?: number;
+  isFinalQuestion?: boolean;
 };
 
 export const ResultBanner = ({
   isCorrect,
   pointsAwarded,
   responseTimeMs,
+  isFinalQuestion = false,
 }: ResultBannerProps) => (
   <div
     className={`relative overflow-hidden rounded-lg border px-4 py-5 text-center ${
@@ -28,7 +30,7 @@ export const ResultBanner = ({
   >
     <FestivalConfetti active={isCorrect} />
     <GaneshMascot
-      pose={isCorrect ? "celebrate" : "surprised"}
+      pose={isCorrect ? "happy" : "surprised"}
       size="md"
       className="mb-3"
     />
@@ -40,7 +42,7 @@ export const ResultBanner = ({
       {resultLabel(isCorrect)}
     </p>
     <p className="mt-1 font-sans text-base font-medium text-festival-navy">
-      {isCorrect ? `+${formatPoints(pointsAwarded)} points` : "0 points"}
+      {isCorrect ? `+${formatPoints(pointsAwarded)} point` : "0 points"}
     </p>
     {typeof responseTimeMs === "number" ? (
       <p className="mt-1 font-sans text-sm text-festival-muted">
@@ -48,7 +50,7 @@ export const ResultBanner = ({
       </p>
     ) : null}
     <p className="mt-3 font-sans text-sm text-festival-muted">
-      Next question coming up…
+      {isFinalQuestion ? "Final leaderboard coming up…" : "Next question coming up…"}
     </p>
   </div>
 );

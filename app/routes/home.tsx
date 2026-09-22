@@ -30,7 +30,7 @@ export default function Home() {
         </p>
       </header>
 
-      <GaneshMascot pose="modak" size="hero" />
+      <GaneshMascot pose="blessing" size="hero" />
 
       <Card className="border-festival-border bg-white">
         <PinForm />

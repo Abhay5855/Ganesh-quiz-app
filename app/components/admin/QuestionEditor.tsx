@@ -93,7 +93,7 @@ export const QuestionEditor = ({
   const [timeLimit, setTimeLimit] = useState(
     clampTimeLimit(initial?.time_limit_seconds ?? 30),
   );
-  const [points, setPoints] = useState(initial?.points ?? 1000);
+  const [points, setPoints] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -196,11 +196,15 @@ export const QuestionEditor = ({
         <Input
           label="Points"
           type="number"
-          min={0}
+          min={1}
+          max={1}
           value={points}
-          onChange={(e) => setPoints(Number(e.target.value))}
+          onChange={() => setPoints(1)}
           aria-label="Points"
         />
+        <p className="text-xs text-festival-muted sm:col-span-2">
+          Each question is worth 1 point.
+        </p>
       </div>
 
       <label className="flex flex-col gap-1.5">

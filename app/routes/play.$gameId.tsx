@@ -6,12 +6,12 @@ import { TimerBar } from "~/components/participant/TimerBar";
 import { LockedInBanner } from "~/components/participant/LockedInBanner";
 import { ResultBanner } from "~/components/participant/ResultBanner";
 import { FinalRanking } from "~/components/participant/FinalRanking";
-import { BetweenQuestions } from "~/components/participant/BetweenQuestions";
+import { GaneshMascot } from "~/components/participant/GaneshMascot";
 import { ParticipantShell } from "~/components/participant/ParticipantShell";
 import { StatusMessage } from "~/components/participant/StatusMessage";
 import { QuestionRenderer } from "~/components/questions/QuestionRenderer";
 import { CorrectAnswerSummary } from "~/components/questions/CorrectAnswerSummary";
-import { FastestFingers } from "~/components/ui/FastestFingers";
+import { LeaderboardTable } from "~/components/ui/LeaderboardTable";
 import { Spinner } from "~/components/ui/Spinner";
 import { Card } from "~/components/ui/Card";
 import { formatPoints } from "~/lib/scoring-display";
@@ -20,7 +20,6 @@ import { usePlayer } from "~/hooks/usePlayer";
 import { useTimer } from "~/hooks/useTimer";
 import { useLeaderboard } from "~/hooks/useLeaderboard";
 import { useAnswerSubmit } from "~/hooks/useAnswerSubmit";
-import { useFastestAnswers } from "~/hooks/useFastestAnswers";
 import { getSupabaseBrowserClient } from "~/lib/supabase.client";
 import type { PlayerState } from "~/types/game";
 import type { ActiveQuestion, QuestionReveal } from "~/types/questions";
@@ -54,28 +53,19 @@ export default function PlayPage({ params }: Route.ComponentProps) {
   const [questionLoading, setQuestionLoading] = useState(false);
   const lastQuestionIdRef = useRef<string | null>(null);
 
-  const showFinalRanking = game?.phase === "finished";
-  const { me, refresh: refreshFinalRank } = useLeaderboard({
+  const showFinalLeaderboard = game?.phase === "leaderboard" || game?.phase === "finished";
+  const { entries: leaderboardEntries, me, refresh: refreshFinalRank } = useLeaderboard({
     gameId,
-    enabled: showFinalRanking,
+    enabled: showFinalLeaderboard,
     playerId: session?.player_id,
     playerToken: session?.player_token,
-    limit: 1,
+    limit: 5,
   });
 
   const { remainingSeconds, isExpired } = useTimer(
     game?.phase === "question" ? game.question_started_at : null,
     question?.time_limit_seconds,
   );
-  const showFastest =
-    game?.phase === "answer_reveal" && Boolean(session?.player_token);
-  const { entries: fastest } = useFastestAnswers({
-    gameId,
-    enabled: showFastest,
-    playerId: session?.player_id,
-    playerToken: session?.player_token,
-    limit: 3,
-  });
 
   useEffect(() => {
     if (!ready) return;
@@ -189,6 +179,7 @@ export default function PlayPage({ params }: Route.ComponentProps) {
       void loadReveal();
       void loadPlayerState();
     } else if (game.phase === "leaderboard") {
+      void refreshFinalRank();
       void loadPlayerState();
     } else if (game.phase === "finished") {
       void refreshFinalRank();
@@ -336,8 +327,9 @@ export default function PlayPage({ params }: Route.ComponentProps) {
           {reveal?.player_result ? (
             <ResultBanner
               isCorrect={reveal.player_result.is_correct}
-              pointsAwarded={reveal.player_result.points_awarded}
+              pointsAwarded={reveal.player_result.is_correct ? 1 : 0}
               responseTimeMs={reveal.player_result.response_time_ms}
+              isFinalQuestion={question?.question_number === question?.question_count}
             />
           ) : (
             <p className="py-2 text-center text-festival-muted">
@@ -376,13 +368,18 @@ export default function PlayPage({ params }: Route.ComponentProps) {
           ) : (
             <Spinner label="Loading results…" />
           )}
-          <FastestFingers entries={fastest} />
         </Card>
       ) : null}
 
       {game.phase === "leaderboard" ? (
         <Card>
-          <BetweenQuestions score={playerScore} />
+          <div className="space-y-4">
+            <GaneshMascot pose="leaderboard" size="lg" />
+            <h2 className="text-center font-display text-2xl font-bold text-festival-navy">
+              Final leaderboard
+            </h2>
+            <LeaderboardTable entries={leaderboardEntries} me={me} />
+          </div>
         </Card>
       ) : null}
 

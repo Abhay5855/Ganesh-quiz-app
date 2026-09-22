@@ -59,6 +59,7 @@ export type LeaderboardEntry = {
   rank: number;
   display_name: string;
   score: number;
+  total_time_ms: number;
   is_me?: boolean;
 };
 
@@ -72,6 +73,7 @@ export type LeaderboardMe = {
   rank: number;
   display_name: string;
   score: number;
+  total_time_ms: number;
 };
 
 export type PlayerSession = {

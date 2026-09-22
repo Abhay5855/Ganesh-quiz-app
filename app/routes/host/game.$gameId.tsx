@@ -5,11 +5,10 @@ import { GamePinDisplay } from "~/components/host/GamePinDisplay";
 import { PlayerRoster } from "~/components/host/PlayerRoster";
 import { HostControlBar } from "~/components/host/HostControlBar";
 import { HostQuestionStatus } from "~/components/host/HostQuestionStatus";
-import { HostLeaderboard } from "~/components/host/HostLeaderboard";
+import { HostFinalLeaderboard } from "~/components/host/HostFinalLeaderboard";
 import { Badge } from "~/components/ui/Badge";
 import { Card } from "~/components/ui/Card";
 import { Spinner } from "~/components/ui/Spinner";
-import { FastestFingers } from "~/components/ui/FastestFingers";
 import {
   CorrectAnswerSummary,
   correctAnswerFromConfig,
@@ -18,7 +17,6 @@ import { useGameSession } from "~/hooks/useGameSession";
 import { useAnswerCount } from "~/hooks/useAnswerCount";
 import { useLeaderboard } from "~/hooks/useLeaderboard";
 import { useTimer } from "~/hooks/useTimer";
-import { useFastestAnswers } from "~/hooks/useFastestAnswers";
 import { getSupabaseBrowserClient } from "~/lib/supabase.client";
 import { PHASE_LABELS } from "~/lib/game-state";
 import type { Player, Question } from "~/types/game";
@@ -64,23 +62,17 @@ export default function HostGamePage({
   const [players, setPlayers] = useState<Player[]>([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [boardLimit, setBoardLimit] = useState(10);
   const pendingRef = useRef(false);
 
   const { submitted, players: playerCount } = useAnswerCount(
     gameId,
     game?.phase === "question",
   );
-  const showBoard = game?.phase === "finished";
+  const showBoard = game?.phase === "leaderboard" || game?.phase === "finished";
   const { entries, refresh: refreshBoard } = useLeaderboard({
     gameId,
     enabled: showBoard,
-    limit: boardLimit,
-  });
-  const { entries: fastest } = useFastestAnswers({
-    gameId,
-    enabled: game?.phase === "answer_reveal",
-    limit: 3,
+    limit: 5,
   });
 
   const currentIndex = useMemo(() => {
@@ -99,6 +91,7 @@ export default function HostGamePage({
     currentIndex >= 0 && hasNextQuestion
       ? questions[currentIndex + 1]
       : questions[0];
+  const isFinalQuestion = currentIndex === questions.length - 1;
 
   const loadPlayers = useCallback(async () => {
     const supabase = getSupabaseBrowserClient();
@@ -168,13 +161,7 @@ export default function HostGamePage({
           ? questions[currentIndex + 1]
           : null;
 
-    // From leaderboard "Next question" via control bar Start
-    const target =
-      game?.phase === "lobby"
-        ? questions[0]
-        : game?.phase === "leaderboard"
-          ? questions[currentIndex + 1]
-          : question;
+    const target = game?.phase === "lobby" ? questions[0] : question;
 
     if (!target) {
       setError("No questions available");
@@ -193,6 +180,7 @@ export default function HostGamePage({
   };
 
   const handleLeaderboard = async () => {
+    if (!isFinalQuestion) return;
     await updateGame({ phase: "leaderboard" });
   };
 
@@ -206,6 +194,14 @@ export default function HostGamePage({
   };
 
   const handleFinish = async () => {
+    if (
+      !confirm(
+        "Finish the quiz for all players? This cannot be undone for this game.",
+      )
+    ) {
+      return;
+    }
+
     await updateGame({
       phase: "finished",
       status: "finished",
@@ -221,8 +217,17 @@ export default function HostGamePage({
     return <p className="text-festival-danger">Game not found</p>;
   }
 
-  const isLive =
-    game.status === "active" && game.phase !== "finished";
+  if (showBoard) {
+    return (
+      <HostFinalLeaderboard
+        entries={entries}
+        onEndQuiz={game.phase === "leaderboard" ? handleFinish : undefined}
+        pending={pending}
+      />
+    );
+  }
+
+  const isLive = game.status === "active" && game.phase !== "finished";
 
   return (
     <div className="space-y-6">
@@ -246,8 +251,8 @@ export default function HostGamePage({
 
       <div className="grid gap-6 lg:grid-cols-2">
         <GamePinDisplay code={game.game_code} />
-        <Card>
-          <PlayerRoster players={players} />
+        <Card className={game.phase === "lobby" ? "" : "self-start"}>
+          <PlayerRoster players={players} compact={game.phase !== "lobby"} />
         </Card>
       </div>
 
@@ -269,8 +274,7 @@ export default function HostGamePage({
             {currentQuestion.question_text}
           </p>
           <p className="mt-1 font-sans text-sm text-festival-muted">
-            {currentQuestion.type} · {currentQuestion.time_limit_seconds}s ·{" "}
-            {currentQuestion.points} pts
+            {currentQuestion.type} · {currentQuestion.time_limit_seconds}s · 1 point
           </p>
         </Card>
       ) : null}
@@ -295,38 +299,24 @@ export default function HostGamePage({
               null
             }
           />
-          <FastestFingers entries={fastest} prominent />
         </div>
       ) : null}
 
-      <Card>
-        <HostControlBar
-          phase={game.phase}
-          pending={pending}
-          hasNextQuestion={hasNextQuestion}
-          onStartQuestion={handleStartQuestion}
-          onReveal={handleReveal}
-          onLeaderboard={handleLeaderboard}
-          onNext={handleNext}
-          onFinish={handleFinish}
-        />
-      </Card>
-
-      {game.phase === "finished" && (
+      {!showBoard ? (
         <Card>
-          <HostLeaderboard
-            entries={entries}
-            expanded={boardLimit >= 50}
-            onExpand={
-              boardLimit < 50
-                ? () => {
-                    setBoardLimit(50);
-                  }
-                : undefined
-            }
+          <HostControlBar
+            phase={game.phase}
+            pending={pending}
+            hasNextQuestion={hasNextQuestion}
+            isFinalQuestion={isFinalQuestion}
+            onStartQuestion={handleStartQuestion}
+            onReveal={handleReveal}
+            onLeaderboard={handleLeaderboard}
+            onNext={handleNext}
           />
         </Card>
-      )}
+      ) : null}
+
     </div>
   );
 }

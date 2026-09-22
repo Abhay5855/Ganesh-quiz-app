@@ -1,5 +1,6 @@
+import { Medal } from "lucide-react";
 import type { LeaderboardEntry, LeaderboardMe } from "~/types/game";
-import { formatPoints } from "~/lib/scoring-display";
+import { formatPoints, formatResponseTime } from "~/lib/scoring-display";
 
 type LeaderboardTableProps = {
   entries: LeaderboardEntry[];
@@ -24,6 +25,24 @@ export const LeaderboardTable = ({
 
   const meOutsideTop =
     me && !entries.some((e) => e.is_me || e.rank === me.rank);
+  const getTopRankClass = (rank: number) => {
+    if (rank === 1) return "border-amber-300 bg-amber-50 text-amber-600";
+    if (rank === 2) return "border-slate-300 bg-slate-50 text-slate-500";
+    if (rank === 3) return "border-orange-300 bg-orange-50 text-orange-600";
+    return "";
+  };
+  const getTopRowClass = (rank: number) => {
+    if (rank === 1) {
+      return dark ? "bg-amber-300/10" : "bg-amber-50/70";
+    }
+    if (rank === 2) {
+      return dark ? "bg-slate-200/10" : "bg-slate-50";
+    }
+    if (rank === 3) {
+      return dark ? "bg-orange-300/10" : "bg-orange-50/70";
+    }
+    return "";
+  };
 
   return (
     <div className="space-y-3">
@@ -36,27 +55,36 @@ export const LeaderboardTable = ({
       >
         {entries.map((entry, index) => {
           const isMe = Boolean(entry.is_me);
+          const isTopThree = entry.rank <= 3;
           return (
             <li
               key={`${entry.rank}-${entry.display_name}-${index}`}
-              className={`flex items-center gap-3 px-4 py-3 ${
+              className={`flex items-center gap-4 px-5 py-4 ${
                 isMe
                   ? dark
                     ? "bg-festival-saffron/20"
                     : "bg-festival-cream-soft"
-                  : ""
+                  : getTopRowClass(entry.rank)
               }`}
             >
               <span
-                className={`w-8 text-center font-sans text-lg font-bold tabular-nums ${
-                  entry.rank <= 3
-                    ? "text-festival-gold"
+                className={`flex h-10 w-14 shrink-0 items-center justify-center gap-1 rounded-full border font-sans text-base font-bold tabular-nums ${
+                  isTopThree
+                    ? getTopRankClass(entry.rank)
                     : dark
-                      ? "text-white/60"
-                      : "text-festival-muted"
+                      ? "border-white/10 text-white/60"
+                      : "border-festival-border text-festival-muted"
                 }`}
               >
-                {entry.rank}
+                {isTopThree ? (
+                  <>
+                    <Medal aria-hidden className="h-5 w-5" />
+                    {entry.rank}
+                  </>
+                ) : (
+                  entry.rank
+                )}
+                <span className="sr-only">Rank {entry.rank}</span>
               </span>
               <span
                 className={`min-w-0 flex-1 truncate font-sans font-medium ${
@@ -66,12 +94,21 @@ export const LeaderboardTable = ({
                 {entry.display_name}
                 {isMe ? " (you)" : ""}
               </span>
-              <span
-                className={`font-sans font-semibold tabular-nums ${
-                  dark ? "text-festival-gold" : "text-festival-saffron"
-                }`}
-              >
-                {formatPoints(entry.score)}
+              <span className="flex shrink-0 flex-col items-end gap-1 font-sans tabular-nums">
+                <span
+                  className={`font-semibold ${
+                    dark ? "text-festival-gold" : "text-festival-saffron"
+                  }`}
+                >
+                  {formatPoints(entry.score)} {entry.score === 1 ? "pt" : "pts"}
+                </span>
+                <span
+                  className={`text-xs font-medium ${
+                    dark ? "text-white/65" : "text-festival-muted"
+                  }`}
+                >
+                  Time {formatResponseTime(entry.total_time_ms)}
+                </span>
               </span>
             </li>
           );
@@ -90,7 +127,10 @@ export const LeaderboardTable = ({
           <span className="truncate">{me.display_name}</span>
           <span className="mx-2 opacity-40">·</span>
           <span className="font-semibold text-festival-gold">
-            {formatPoints(me.score)}
+            {formatPoints(me.score)} {me.score === 1 ? "pt" : "pts"}
+            <span className="ml-2 font-normal opacity-75">
+              • {formatResponseTime(me.total_time_ms)}
+            </span>
           </span>
         </div>
       ) : null}

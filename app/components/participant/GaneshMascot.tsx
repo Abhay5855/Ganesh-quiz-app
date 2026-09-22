@@ -1,11 +1,10 @@
 import { useState } from "react";
-import modakSrc from "~/assets/images/ganesh-modak.jpg";
-import waveSrc from "~/assets/images/ganesh-wave.jpg";
-import quizTimeSrc from "~/assets/images/ganesh-quiz-time.jpg";
-import thinkingSrc from "~/assets/images/ganesh-thinking.jpg";
-import celebrateSrc from "~/assets/images/ganesh-celebrate.jpg";
-import surprisedSrc from "~/assets/images/ganesh-surprised.jpg";
-import firstPlaceSrc from "~/assets/images/ganesh-first-place.jpg";
+import blessingSrc from "~/assets/images/ganesh-blessing.png";
+import happySrc from "~/assets/images/ganesh-happy.png";
+import readingSrc from "~/assets/images/ganesh-reading.png";
+import thinkingSrc from "~/assets/images/ganesh-thinking-borderless.png";
+import leaderboardSrc from "~/assets/images/ganesh-leaderboard.png";
+import surprisedSrc from "~/assets/images/ganesh-surprised-borderless.png";
 
 export type MascotPose =
   | "modak"
@@ -14,7 +13,11 @@ export type MascotPose =
   | "thinking"
   | "celebrate"
   | "surprised"
-  | "firstPlace";
+  | "firstPlace"
+  | "blessing"
+  | "happy"
+  | "reading"
+  | "leaderboard";
 
 type GaneshMascotProps = {
   pose: MascotPose;
@@ -23,13 +26,17 @@ type GaneshMascotProps = {
 };
 
 const SRC: Record<MascotPose, string | undefined> = {
-  modak: modakSrc,
-  wave: waveSrc,
-  quizTime: quizTimeSrc,
+  modak: blessingSrc,
+  wave: happySrc,
+  quizTime: readingSrc,
   thinking: thinkingSrc,
-  celebrate: celebrateSrc,
+  celebrate: happySrc,
   surprised: surprisedSrc,
-  firstPlace: firstPlaceSrc,
+  firstPlace: leaderboardSrc,
+  blessing: blessingSrc,
+  happy: happySrc,
+  reading: readingSrc,
+  leaderboard: leaderboardSrc,
 };
 
 const SIZE_CLASS: Record<NonNullable<GaneshMascotProps["size"]>, string> = {
@@ -54,7 +61,9 @@ export const GaneshMascot = ({
     <img
       src={src}
       alt=""
+      decoding="async"
       draggable={false}
+      loading={size === "hero" ? "eager" : "lazy"}
       onError={() => setFailed(true)}
       className={`mx-auto object-contain ${SIZE_CLASS[size]} ${className}`}
     />

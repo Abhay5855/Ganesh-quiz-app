@@ -3,7 +3,7 @@ import { GaneshMascot } from "~/components/participant/GaneshMascot";
 export const WaitingRoom = ({ displayName }: { displayName?: string }) => (
   <div className="flex flex-col items-center gap-4 py-8 text-center">
     <div className="festival-pulse">
-      <GaneshMascot pose="quizTime" size="lg" />
+      <GaneshMascot pose="reading" size="lg" />
     </div>
     <h2 className="font-display text-3xl font-bold text-festival-navy">
       You&apos;re in!

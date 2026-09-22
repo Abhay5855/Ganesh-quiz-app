@@ -44,7 +44,7 @@ export const TimerBar = ({
           </p>
           {typeof points === "number" ? (
             <p className="font-sans text-xs text-festival-muted">
-              {points} pts
+              {points} {points === 1 ? "point" : "points"}
             </p>
           ) : null}
         </div>

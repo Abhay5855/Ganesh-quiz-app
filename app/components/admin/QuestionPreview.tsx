@@ -49,7 +49,7 @@ export const QuestionPreview = ({
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <Badge>{question.type}</Badge>
             <span className="text-sm text-slate-500">
-              {question.time_limit_seconds}s · {question.points} pts
+              {question.time_limit_seconds}s · 1 point
             </span>
           </div>
         </div>

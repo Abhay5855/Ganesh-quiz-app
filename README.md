@@ -57,7 +57,7 @@ One-time company event quiz for ~120–130 concurrent participants.
 ## Deploy (Vercel)
 
 1. Push repo to GitHub
-2. Import project in Vercel (framework: React Router / Vite)
+2. Import the repository root in Vercel and select **React Router** as the framework (not plain Vite). Keep the default output directory; SSR routes require Vercel Functions, not an `index.html` rewrite.
 3. Set env: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`
 4. Deploy
 

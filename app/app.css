@@ -106,6 +106,97 @@ h3 {
   animation: festival-pulse 2s ease-in-out infinite;
 }
 
+@keyframes host-final-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes host-final-mascot-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.host-final-heading {
+  animation: host-final-enter 360ms ease-out both;
+}
+
+.host-final-mascot {
+  animation: host-final-mascot-enter 420ms 180ms ease-out both;
+}
+
+.host-final-podium-1 {
+  animation: host-final-enter 360ms 480ms ease-out both;
+}
+
+.host-final-podium-2,
+.host-final-podium-3 {
+  animation: host-final-enter 320ms 580ms ease-out both;
+}
+
+.host-final-remaining,
+.host-final-action {
+  animation: host-final-enter 280ms 760ms ease-out both;
+}
+
+@keyframes host-final-confetti-fall {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0) rotate(0deg);
+  }
+  18% {
+    opacity: 0.9;
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(20px, 220px, 0) rotate(180deg);
+  }
+}
+
+.host-final-confetti {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.host-final-confetti span {
+  position: absolute;
+  top: 16%;
+  width: 5px;
+  height: 8px;
+  border-radius: 1px;
+  animation: host-final-confetti-fall 800ms ease-out both;
+}
+
+.host-final-confetti span:nth-child(4n + 1) { background: #e97a00; }
+.host-final-confetti span:nth-child(4n + 2) { background: #f4c430; }
+.host-final-confetti span:nth-child(4n + 3) { background: #2e9e5b; }
+.host-final-confetti span:nth-child(4n) { background: #6a1f1b; }
+.host-final-confetti span:nth-child(1) { left: 12%; animation-delay: 300ms; }
+.host-final-confetti span:nth-child(2) { left: 20%; animation-delay: 340ms; }
+.host-final-confetti span:nth-child(3) { left: 29%; animation-delay: 280ms; }
+.host-final-confetti span:nth-child(4) { left: 36%; animation-delay: 390ms; }
+.host-final-confetti span:nth-child(5) { left: 44%; animation-delay: 320ms; }
+.host-final-confetti span:nth-child(6) { left: 52%; animation-delay: 410ms; }
+.host-final-confetti span:nth-child(7) { left: 60%; animation-delay: 350ms; }
+.host-final-confetti span:nth-child(8) { left: 68%; animation-delay: 440ms; }
+.host-final-confetti span:nth-child(9) { left: 75%; animation-delay: 300ms; }
+.host-final-confetti span:nth-child(10) { left: 82%; animation-delay: 380ms; }
+.host-final-confetti span:nth-child(11) { left: 88%; animation-delay: 330ms; }
+.host-final-confetti span:nth-child(12) { left: 93%; animation-delay: 400ms; }
+
 @keyframes festival-confetti-fall {
   0% {
     transform: translateY(-8%) rotate(0deg);
@@ -180,5 +271,19 @@ h3 {
 
   .festival-pulse {
     animation: none;
+  }
+
+  .host-final-heading,
+  .host-final-mascot,
+  .host-final-podium-1,
+  .host-final-podium-2,
+  .host-final-podium-3,
+  .host-final-remaining,
+  .host-final-action {
+    animation: none;
+  }
+
+  .host-final-confetti {
+    display: none;
   }
 }

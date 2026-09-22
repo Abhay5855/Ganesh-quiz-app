@@ -1,0 +1,275 @@
+{
+  "buildManifest": {
+    "serverBundles": {
+      "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0": {
+        "id": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+        "file": "build/server/nodejs_eyJydW50aW1lIjoibm9kZWpzIn0/index.js",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    },
+    "routeIdToServerBundleId": {
+      "routes/home": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/join.$pin": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/play.$gameId": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/login": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/index": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/quizzes.new": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/admin/quizzes.$quizId": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/host/index": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0",
+      "routes/host/game.$gameId": "nodejs_eyJydW50aW1lIjoibm9kZWpzIn0"
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "app/root.tsx",
+        "path": "",
+        "config": {}
+      },
+      "routes/home": {
+        "id": "routes/home",
+        "parentId": "root",
+        "file": "app/routes/home.tsx",
+        "index": true,
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/join.$pin": {
+        "id": "routes/join.$pin",
+        "parentId": "root",
+        "file": "app/routes/join.$pin.tsx",
+        "path": "join/:pin",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/play.$gameId": {
+        "id": "routes/play.$gameId",
+        "parentId": "root",
+        "file": "app/routes/play.$gameId.tsx",
+        "path": "play/:gameId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/admin/login": {
+        "id": "routes/admin/login",
+        "parentId": "root",
+        "file": "app/routes/admin/login.tsx",
+        "path": "admin/login",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/admin/layout": {
+        "id": "routes/admin/layout",
+        "parentId": "root",
+        "file": "app/routes/admin/layout.tsx",
+        "config": {}
+      },
+      "routes/admin/index": {
+        "id": "routes/admin/index",
+        "parentId": "routes/admin/layout",
+        "file": "app/routes/admin/index.tsx",
+        "path": "admin",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/admin/quizzes.new": {
+        "id": "routes/admin/quizzes.new",
+        "parentId": "routes/admin/layout",
+        "file": "app/routes/admin/quizzes.new.tsx",
+        "path": "admin/quizzes/new",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/admin/quizzes.$quizId": {
+        "id": "routes/admin/quizzes.$quizId",
+        "parentId": "routes/admin/layout",
+        "file": "app/routes/admin/quizzes.$quizId.tsx",
+        "path": "admin/quizzes/:quizId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/host/layout": {
+        "id": "routes/host/layout",
+        "parentId": "root",
+        "file": "app/routes/host/layout.tsx",
+        "config": {}
+      },
+      "routes/host/index": {
+        "id": "routes/host/index",
+        "parentId": "routes/host/layout",
+        "file": "app/routes/host/index.tsx",
+        "path": "host",
+        "config": {
+          "runtime": "nodejs"
+        }
+      },
+      "routes/host/game.$gameId": {
+        "id": "routes/host/game.$gameId",
+        "parentId": "routes/host/layout",
+        "file": "app/routes/host/game.$gameId.tsx",
+        "path": "host/game/:gameId",
+        "config": {
+          "runtime": "nodejs"
+        }
+      }
+    }
+  },
+  "reactRouterConfig": {
+    "appDirectory": "C:/Users/ap391/OneDrive/Desktop/ganesh-quiz/app",
+    "basename": "/",
+    "buildDirectory": "C:/Users/ap391/OneDrive/Desktop/ganesh-quiz/build",
+    "future": {
+      "unstable_enableNodeReadableStream": false,
+      "unstable_optimizeDeps": false
+    },
+    "routes": {
+      "root": {
+        "id": "root",
+        "file": "root.tsx",
+        "path": ""
+      },
+      "routes/home": {
+        "id": "routes/home",
+        "parentId": "root",
+        "file": "routes/home.tsx",
+        "index": true
+      },
+      "routes/join.$pin": {
+        "id": "routes/join.$pin",
+        "parentId": "root",
+        "file": "routes/join.$pin.tsx",
+        "path": "join/:pin"
+      },
+      "routes/play.$gameId": {
+        "id": "routes/play.$gameId",
+        "parentId": "root",
+        "file": "routes/play.$gameId.tsx",
+        "path": "play/:gameId"
+      },
+      "routes/admin/login": {
+        "id": "routes/admin/login",
+        "parentId": "root",
+        "file": "routes/admin/login.tsx",
+        "path": "admin/login"
+      },
+      "routes/admin/layout": {
+        "id": "routes/admin/layout",
+        "parentId": "root",
+        "file": "routes/admin/layout.tsx"
+      },
+      "routes/admin/index": {
+        "id": "routes/admin/index",
+        "parentId": "routes/admin/layout",
+        "file": "routes/admin/index.tsx",
+        "path": "admin"
+      },
+      "routes/admin/quizzes.new": {
+        "id": "routes/admin/quizzes.new",
+        "parentId": "routes/admin/layout",
+        "file": "routes/admin/quizzes.new.tsx",
+        "path": "admin/quizzes/new"
+      },
+      "routes/admin/quizzes.$quizId": {
+        "id": "routes/admin/quizzes.$quizId",
+        "parentId": "routes/admin/layout",
+        "file": "routes/admin/quizzes.$quizId.tsx",
+        "path": "admin/quizzes/:quizId"
+      },
+      "routes/host/layout": {
+        "id": "routes/host/layout",
+        "parentId": "root",
+        "file": "routes/host/layout.tsx"
+      },
+      "routes/host/index": {
+        "id": "routes/host/index",
+        "parentId": "routes/host/layout",
+        "file": "routes/host/index.tsx",
+        "path": "host"
+      },
+      "routes/host/game.$gameId": {
+        "id": "routes/host/game.$gameId",
+        "parentId": "routes/host/layout",
+        "file": "routes/host/game.$gameId.tsx",
+        "path": "host/game/:gameId"
+      }
+    },
+    "routeDiscovery": {
+      "mode": "lazy",
+      "manifestPath": "/__manifest"
+    },
+    "serverBuildFile": "index.js",
+    "serverModuleFormat": "esm",
+    "ssr": true,
+    "splitRouteModules": true,
+    "subResourceIntegrity": false,
+    "allowedActionOrigins": false,
+    "unstable_routeConfig": [
+      {
+        "id": "root",
+        "path": "",
+        "file": "root.tsx",
+        "children": [
+          {
+            "file": "routes/home.tsx",
+            "index": true
+          },
+          {
+            "file": "routes/join.$pin.tsx",
+            "path": "join/:pin"
+          },
+          {
+            "file": "routes/play.$gameId.tsx",
+            "path": "play/:gameId"
+          },
+          {
+            "file": "routes/admin/login.tsx",
+            "path": "admin/login"
+          },
+          {
+            "file": "routes/admin/layout.tsx",
+            "children": [
+              {
+                "file": "routes/admin/index.tsx",
+                "path": "admin"
+              },
+              {
+                "file": "routes/admin/quizzes.new.tsx",
+                "path": "admin/quizzes/new"
+              },
+              {
+                "file": "routes/admin/quizzes.$quizId.tsx",
+                "path": "admin/quizzes/:quizId"
+              }
+            ]
+          },
+          {
+            "file": "routes/host/layout.tsx",
+            "children": [
+              {
+                "file": "routes/host/index.tsx",
+                "path": "host"
+              },
+              {
+                "file": "routes/host/game.$gameId.tsx",
+                "path": "host/game/:gameId"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "viteConfig": {
+    "build": {
+      "assetsDir": "assets"
+    }
+  }
+}

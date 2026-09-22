@@ -19,7 +19,7 @@ insert into public.questions (
   'What is Lord Ganesha''s favourite sweet?',
   '{"options":[{"id":"a","text":"Modak"},{"id":"b","text":"Jalebi"},{"id":"c","text":"Barfi"}],"correctAnswer":"a"}'::jsonb,
   20,
-  1000,
+  1,
   0
 ),
 (
@@ -28,7 +28,7 @@ insert into public.questions (
   'Which animals are associated with Ganesha lore? (select all)',
   '{"options":[{"id":"a","text":"Mouse"},{"id":"b","text":"Elephant"},{"id":"c","text":"Snake"}],"correctAnswers":["a","b"]}'::jsonb,
   25,
-  1000,
+  1,
   1
 ),
 (
@@ -37,6 +37,6 @@ insert into public.questions (
   'Put these festival moments in a traditional sequence',
   '{"items":[{"id":"a","text":"Ganesh Sthapana"},{"id":"b","text":"Aarti"},{"id":"c","text":"Visarjan"}],"correctOrder":["a","b","c"]}'::jsonb,
   30,
-  1000,
+  1,
   2
 );

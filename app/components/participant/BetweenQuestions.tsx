@@ -13,7 +13,7 @@ export const BetweenQuestions = ({ score }: BetweenQuestionsProps) => (
     </h2>
     {typeof score === "number" ? (
       <p className="font-sans text-base text-festival-muted">
-        Your score so far: {formatPoints(score)}
+        Your score so far: {formatPoints(score)} {score === 1 ? "point" : "points"}
       </p>
     ) : null}
     <p className="max-w-xs font-sans text-sm text-festival-muted">
